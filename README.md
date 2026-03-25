@@ -1,10 +1,9 @@
-<!DOCTYPE html>
+
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <!-- 加入 maximum-scale=1.0, user-scalable=no 防止手機 (尤其 iOS) 點擊輸入框時畫面亂放大變形 -->
+  <!-- 鎖定畫面比例，防止 iOS 點擊輸入框時畫面亂放大 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>水電工程報價系統</title>
   
   <!-- 載入 Tailwind CSS 進行排版 -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -17,7 +16,7 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <style>
-    /* 隱藏數字輸入框的上下箭頭，釋放更多寬度給數字顯示 */
+    /* 隱藏數字輸入框的上下箭頭 */
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 
       -webkit-appearance: none; 
@@ -31,18 +30,26 @@
       @page { margin: 0; }
       body { margin: 1.6cm; background-color: white !important; }
     }
+    /* 確保表格在手機上可以順暢橫向滑動 */
+    .table-container {
+      -webkit-overflow-scrolling: touch;
+    }
   </style>
 </head>
 <body class="bg-slate-100">
 
-  <!-- React 渲染的目標區塊 -->
-  <div id="root"></div>
+  <!-- React 渲染的目標區塊 (加入載入中文字，以防白畫面) -->
+  <div id="root">
+    <div class="min-h-screen flex items-center justify-center text-slate-500 font-bold text-xl">
+      系統載入中，請稍候...
+    </div>
+  </div>
 
   <!-- 應用程式邏輯 -->
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // --- 圖示元件 ---
+    // --- 圖示元件 (確保全部正常閉合) ---
     const Mail = ({ size=24, className="" }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>;
     const Plus = ({ size=24, className="" }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
     const Trash2 = ({ size=24, className="" }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>;
@@ -203,9 +210,8 @@
               </div>
             </div>
 
-            {/* 報價單表格區塊：加入 overflow-x-auto 與 Webkit 觸控支援，並強迫表格有最小寬度 */}
-            <div className="overflow-x-auto rounded-lg border-2 border-blue-800 print:border-slate-800 w-full" style={{ WebkitOverflowScrolling: 'touch' }}>
-              {/* 加入 min-w-[800px] 防止手機版擠壓，但列印時 (print:min-w-0) 允許自然縮放 */}
+            {/* 報價單表格區塊：保留 overflow-x-auto 與觸控支援，強迫表格有最小寬度 */}
+            <div className="overflow-x-auto rounded-lg border-2 border-blue-800 print:border-slate-800 w-full table-container">
               <table className="w-full min-w-[850px] print:min-w-0 border-collapse">
                 <thead>
                   <tr className="bg-blue-800 text-white print:bg-slate-200 print:text-black text-sm sm:text-base">
@@ -238,7 +244,18 @@
                             ) : (
                               <div className="flex items-center px-2 relative">
                                 <span className="font-bold text-blue-900 text-lg whitespace-nowrap shrink-0">{prefixText}</span>
-                                <select className="w-full p-2 bg-transparent outline-none font-bold text-blue-900 text-lg appearance-none cursor-pointer print:appearance-none hover:bg-blue-100 rounded transition ml-1" value={item.col1} onChange={(e) => { if (e.target.value === 'CUSTOM') { handleItemChange(item.id, 'isCustomCol1', true); handleItemChange(item.id, 'col1', ''); } else handleItemChange(item.id, 'col1', e.target.value); }}>
+                                <select 
+                                  className="w-full p-2 bg-transparent outline-none font-bold text-blue-900 text-lg appearance-none cursor-pointer print:appearance-none hover:bg-blue-100 rounded transition ml-1" 
+                                  value={item.col1} 
+                                  onChange={(e) => { 
+                                    if (e.target.value === 'CUSTOM') { 
+                                      handleItemChange(item.id, 'isCustomCol1', true); 
+                                      handleItemChange(item.id, 'col1', ''); 
+                                    } else {
+                                      handleItemChange(item.id, 'col1', e.target.value); 
+                                    }
+                                  }}
+                                >
                                   <option value="" disabled>請選擇分類...</option>
                                   {CATEGORY_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                                   <option value="CUSTOM" className="font-bold text-blue-600">✎ 自訂輸入...</option>
@@ -272,7 +289,18 @@
                             </div>
                           ) : (
                             <div className="relative">
-                              <select className="w-full p-2 bg-transparent outline-none appearance-none cursor-pointer print:appearance-none hover:bg-slate-100 rounded transition text-slate-800" value={item.col2} onChange={(e) => { if (e.target.value === 'CUSTOM') { handleItemChange(item.id, 'isCustomCol2', true); handleItemChange(item.id, 'col2', ''); } else handleItemChange(item.id, 'col2', e.target.value); }}>
+                              <select 
+                                className="w-full p-2 bg-transparent outline-none appearance-none cursor-pointer print:appearance-none hover:bg-slate-100 rounded transition text-slate-800" 
+                                value={item.col2} 
+                                onChange={(e) => { 
+                                  if (e.target.value === 'CUSTOM') { 
+                                    handleItemChange(item.id, 'isCustomCol2', true); 
+                                    handleItemChange(item.id, 'col2', ''); 
+                                  } else {
+                                    handleItemChange(item.id, 'col2', e.target.value); 
+                                  }
+                                }}
+                              >
                                 <option value="" disabled>請選擇項目...</option>
                                 {ITEM_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                                 <option value="CUSTOM" className="font-bold text-blue-600">✎ 自訂輸入...</option>
