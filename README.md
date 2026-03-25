@@ -1,12 +1,10 @@
 
-title: 水電工程估價單
----
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <!-- 鎖定畫面比例，防止 iOS 點擊輸入框時畫面亂放大 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>水電工程報價系統</title>
+  <title>水電工程估價單</title>
   
   <!-- 載入 Tailwind CSS 進行排版 -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -108,6 +106,7 @@ title: 水電工程估價單
       const [grandTotal, setGrandTotal] = useState(0);
       const [modal, setModal] = useState({ show: false, message: '', onConfirm: null });
 
+      // 自動計算總計
       useEffect(() => {
         let total = 0;
         items.forEach(item => {
@@ -120,28 +119,38 @@ title: 水電工程估價單
         setGrandTotal(total);
       }, [items]);
 
-      const handleHeaderChange = (field, value) => setHeaderData({ ...headerData, [field]: value });
-      const handleItemChange = (id, field, value) => setItems(items.map(item => item.id === id ? { ...item, [field]: value } : item));
-      const deleteItem = (id) => setItems(items.filter(item => item.id !== id));
+      // 更新資料狀態 (全面修復資料更新不同步的問題)
+      const handleHeaderChange = (field, value) => {
+        setHeaderData(prev => ({ ...prev, [field]: value }));
+      };
+
+      const handleItemChange = (id, field, value) => {
+        setItems(prev => prev.map(item => item.id === id ? { ...item, [field]: value } : item));
+      };
+
+      const deleteItem = (id) => {
+        setItems(prev => prev.filter(item => item.id !== id));
+      };
 
       const addItem = () => {
-        const newId = Date.now().toString();
-        let lastSuffix = 0;
-        for (let i = items.length - 1; i >= 0; i--) {
-          if (items[i].type === 'category') break;
-          else if (items[i].type === 'item') {
-            const parts = items[i].col1.toString().split('.');
-            const suffixText = parts.length > 1 ? parts.slice(1).join('.') : items[i].col1;
-            const suffix = parseInt(suffixText, 10);
-            if (!isNaN(suffix)) lastSuffix = Math.max(lastSuffix, suffix);
+        setItems(prev => {
+          const newId = Date.now().toString();
+          let lastSuffix = 0;
+          for (let i = prev.length - 1; i >= 0; i--) {
+            if (prev[i].type === 'category') break;
+            else if (prev[i].type === 'item') {
+              const parts = prev[i].col1.toString().split('.');
+              const suffixText = parts.length > 1 ? parts.slice(1).join('.') : prev[i].col1;
+              const suffix = parseInt(suffixText, 10);
+              if (!isNaN(suffix)) lastSuffix = Math.max(lastSuffix, suffix);
+            }
           }
-        }
-        setItems([...items, { id: newId, type: 'item', col1: (lastSuffix + 1).toString(), col2: '', qty: 1, unit: '式', price: 0, remark: '', isCustomCol2: false }]);
+          return [...prev, { id: newId, type: 'item', col1: (lastSuffix + 1).toString(), col2: '', qty: 1, unit: '式', price: 0, remark: '', isCustomCol2: false }];
+        });
       };
 
       const addCategory = () => {
-        const newId = Date.now().toString();
-        setItems([...items, { id: newId, type: 'category', col1: CATEGORY_OPTIONS[0], isCustomCol1: false }]);
+        setItems(prev => [...prev, { id: Date.now().toString(), type: 'category', col1: CATEGORY_OPTIONS[0], isCustomCol1: false }]);
       };
 
       const formatNumber = (num) => Number(num).toLocaleString('en-US');
@@ -267,13 +276,17 @@ title: 水電工程估價單
                                     className="w-full p-0.5 sm:p-2 bg-transparent outline-none font-bold text-slate-800 text-[11px] sm:text-[15px] appearance-none cursor-pointer print:appearance-none hover:bg-slate-200 transition" 
                                     value={item.col1} 
                                     onChange={(e) => { 
-                                      if (e.target.value === 'CUSTOM') { handleItemChange(item.id, 'isCustomCol1', true); handleItemChange(item.id, 'col1', ''); } 
-                                      else handleItemChange(item.id, 'col1', e.target.value); 
+                                      if (e.target.value === 'CUSTOM') { 
+                                        // 修復自訂切換邏輯
+                                        setItems(prev => prev.map(i => i.id === item.id ? { ...i, isCustomCol1: true, col1: '' } : i));
+                                      } else {
+                                        handleItemChange(item.id, 'col1', e.target.value); 
+                                      }
                                     }}
                                   >
                                     <option value="" disabled>請選擇分類...</option>
                                     {CATEGORY_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                                    <option value="CUSTOM" className="text-blue-600">✎ 自訂...</option>
+                                    <option value="CUSTOM" className="text-blue-600">✎ 自訂輸入...</option>
                                   </select>
                                 </div>
                               )}
@@ -307,13 +320,17 @@ title: 水電工程估價單
                               className="w-full p-0.5 sm:p-2 bg-transparent outline-none appearance-none cursor-pointer print:appearance-none hover:bg-white truncate text-[11px] sm:text-[15px]" 
                               value={item.col2} 
                               onChange={(e) => { 
-                                if (e.target.value === 'CUSTOM') { handleItemChange(item.id, 'isCustomCol2', true); handleItemChange(item.id, 'col2', ''); } 
-                                else handleItemChange(item.id, 'col2', e.target.value); 
+                                if (e.target.value === 'CUSTOM') { 
+                                  // 修復自訂切換邏輯
+                                  setItems(prev => prev.map(i => i.id === item.id ? { ...i, isCustomCol2: true, col2: '' } : i));
+                                } else {
+                                  handleItemChange(item.id, 'col2', e.target.value); 
+                                }
                               }}
                             >
                               <option value="" disabled>請選擇...</option>
                               {ITEM_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                              <option value="CUSTOM" className="text-blue-600">✎ 自訂...</option>
+                              <option value="CUSTOM" className="text-blue-600">✎ 自訂輸入...</option>
                             </select>
                           )}
                         </td>
