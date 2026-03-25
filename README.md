@@ -42,7 +42,7 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // --- 圖示元件 (取代原先的 lucide-react) ---
+    // --- 圖示元件 ---
     const Mail = ({ size=24, className="" }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>;
     const Plus = ({ size=24, className="" }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
     const Trash2 = ({ size=24, className="" }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>;
@@ -170,12 +170,12 @@
           )}
 
           <div className="max-w-5xl mx-auto bg-white shadow-xl rounded-lg p-3 sm:p-12 print:shadow-none print:p-0 print:max-w-none print:rounded-none">
-            {/* 標題優化：手機版縮小字體 */}
+            {/* 標題 */}
             <h1 className="text-2xl sm:text-4xl font-black text-blue-900 text-center mb-6 sm:mb-8 tracking-widest border-b-2 sm:border-b-4 border-blue-900 pb-3 sm:pb-4 print:border-b-2">
               水電工程維修 / 翻修報價單
             </h1>
 
-            {/* 表頭資訊：取消強制不換行，讓長地址可以自然換行 */}
+            {/* 表頭資訊 */}
             <div className="grid grid-cols-1 sm:grid-cols-2 border-2 border-slate-300 rounded-lg mb-6 overflow-hidden print:border-slate-800">
               <div className="flex border-b sm:border-r border-slate-300 print:border-slate-800">
                 <div className="bg-slate-100 text-slate-700 font-bold w-16 sm:w-20 px-2 py-2 text-xs sm:text-sm border-r border-slate-300 print:border-slate-800 flex-shrink-0 flex items-center whitespace-nowrap">公司名稱</div>
@@ -203,17 +203,19 @@
               </div>
             </div>
 
-            <div className="overflow-x-auto rounded-lg border-2 border-blue-800 print:border-slate-800">
-              <table className="w-full border-collapse">
+            {/* 報價單表格區塊：加入 overflow-x-auto 與 Webkit 觸控支援，並強迫表格有最小寬度 */}
+            <div className="overflow-x-auto rounded-lg border-2 border-blue-800 print:border-slate-800 w-full" style={{ WebkitOverflowScrolling: 'touch' }}>
+              {/* 加入 min-w-[800px] 防止手機版擠壓，但列印時 (print:min-w-0) 允許自然縮放 */}
+              <table className="w-full min-w-[850px] print:min-w-0 border-collapse">
                 <thead>
                   <tr className="bg-blue-800 text-white print:bg-slate-200 print:text-black text-sm sm:text-base">
-                    <th className="border-r border-blue-700 print:border-slate-800 p-2 text-center w-12 sm:w-16 font-bold">編號</th>
-                    <th className="border-r border-blue-700 print:border-slate-800 p-2 text-left min-w-[180px] font-bold">項目名稱及規格規範</th>
-                    <th className="border-r border-blue-700 print:border-slate-800 p-2 text-center w-20 sm:w-24 font-bold">數量</th>
-                    <th className="border-r border-blue-700 print:border-slate-800 p-2 text-center w-12 sm:w-16 font-bold">單位</th>
-                    <th className="border-r border-blue-700 print:border-slate-800 p-2 text-right w-24 sm:w-28 font-bold">單價</th>
-                    <th className="border-r border-blue-700 print:border-slate-800 p-2 text-right w-28 sm:w-32 font-bold">複價</th>
-                    <th className="p-2 text-left w-24 sm:w-32 relative font-bold">
+                    <th className="border-r border-blue-700 print:border-slate-800 p-2 text-center w-16 print:w-12 font-bold">編號</th>
+                    <th className="border-r border-blue-700 print:border-slate-800 p-2 text-left min-w-[200px] print:min-w-0 font-bold">項目名稱及規格規範</th>
+                    <th className="border-r border-blue-700 print:border-slate-800 p-2 text-center w-20 print:w-16 font-bold">數量</th>
+                    <th className="border-r border-blue-700 print:border-slate-800 p-2 text-center w-16 print:w-12 font-bold">單位</th>
+                    <th className="border-r border-blue-700 print:border-slate-800 p-2 text-right w-24 print:w-20 font-bold">單價</th>
+                    <th className="border-r border-blue-700 print:border-slate-800 p-2 text-right w-32 print:w-24 font-bold">複價</th>
+                    <th className="p-2 text-left w-32 print:w-24 relative font-bold">
                       備註說明
                       <span className="absolute right-2 top-2 print:hidden text-[10px] text-blue-300 opacity-80">操作</span>
                     </th>
@@ -344,7 +346,7 @@
             </div>
           </div>
 
-          {/* 右下角浮動按鈕優化：手機版改為正圓形且靠右對齊 */}
+          {/* 右下角浮動按鈕 */}
           <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 flex flex-col items-end gap-2 sm:gap-3 print:hidden z-40">
             <button onClick={addCategory} className="bg-cyan-600 hover:bg-cyan-700 text-white w-12 h-12 sm:w-auto sm:h-auto sm:px-5 sm:py-3 rounded-full shadow-lg flex items-center justify-center transition font-bold" title="新增分類標題">
               <Plus size={24} className="sm:mr-2" /><span className="hidden sm:inline">新增分類</span>
