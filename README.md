@@ -1,8 +1,10 @@
-
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 加入 maximum-scale=1.0, user-scalable=no 防止手機 (尤其 iOS) 點擊輸入框時畫面亂放大變形 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>水電工程報價系統</title>
   
   <!-- 載入 Tailwind CSS 進行排版 -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -146,7 +148,7 @@
       let currentCatIndex = 0;
 
       return (
-        <div className="min-h-screen bg-slate-100 py-8 px-4 sm:px-8 pb-32 print:p-0 print:bg-white text-sm sm:text-base font-sans text-slate-800">
+        <div className="min-h-screen bg-slate-100 py-6 px-2 sm:py-8 sm:px-8 pb-32 print:p-0 print:bg-white text-sm sm:text-base font-sans text-slate-800">
           
           {modal.show && (
             <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50 print:hidden backdrop-blur-sm">
@@ -167,35 +169,37 @@
             </div>
           )}
 
-          <div className="max-w-5xl mx-auto bg-white shadow-xl rounded-lg p-6 sm:p-12 print:shadow-none print:p-0 print:max-w-none print:rounded-none">
-            <h1 className="text-3xl sm:text-4xl font-black text-blue-900 text-center mb-8 tracking-widest border-b-4 border-blue-900 pb-4 print:border-b-2">
+          <div className="max-w-5xl mx-auto bg-white shadow-xl rounded-lg p-3 sm:p-12 print:shadow-none print:p-0 print:max-w-none print:rounded-none">
+            {/* 標題優化：手機版縮小字體 */}
+            <h1 className="text-2xl sm:text-4xl font-black text-blue-900 text-center mb-6 sm:mb-8 tracking-widest border-b-2 sm:border-b-4 border-blue-900 pb-3 sm:pb-4 print:border-b-2">
               水電工程維修 / 翻修報價單
             </h1>
 
+            {/* 表頭資訊：取消強制不換行，讓長地址可以自然換行 */}
             <div className="grid grid-cols-1 sm:grid-cols-2 border-2 border-slate-300 rounded-lg mb-6 overflow-hidden print:border-slate-800">
               <div className="flex border-b sm:border-r border-slate-300 print:border-slate-800">
-                <div className="bg-slate-100 text-slate-700 font-bold w-16 sm:w-20 px-2 py-1.5 text-xs sm:text-sm border-r border-slate-300 print:border-slate-800 flex-shrink-0 flex items-center whitespace-nowrap">公司名稱</div>
-                <div className="px-2 py-1.5 w-full font-black text-blue-900 text-xs sm:text-sm flex items-center tracking-wider whitespace-nowrap">岳鼎水電工程</div>
+                <div className="bg-slate-100 text-slate-700 font-bold w-16 sm:w-20 px-2 py-2 text-xs sm:text-sm border-r border-slate-300 print:border-slate-800 flex-shrink-0 flex items-center whitespace-nowrap">公司名稱</div>
+                <div className="px-2 py-2 w-full font-black text-blue-900 text-xs sm:text-sm flex items-center tracking-wider">岳鼎水電工程</div>
               </div>
               <div className="flex border-b border-slate-300 print:border-slate-800">
-                <div className="bg-slate-100 text-slate-700 font-bold w-16 sm:w-20 px-2 py-1.5 text-xs sm:text-sm border-r border-slate-300 print:border-slate-800 flex-shrink-0 flex items-center whitespace-nowrap">業主名稱</div>
-                <input type="text" className="px-2 py-1.5 w-full outline-none focus:bg-blue-50 transition font-bold text-slate-800 text-xs sm:text-sm whitespace-nowrap" value={headerData.ownerName} onChange={(e) => handleHeaderChange('ownerName', e.target.value)} placeholder="請輸入業主名稱" />
+                <div className="bg-slate-100 text-slate-700 font-bold w-16 sm:w-20 px-2 py-2 text-xs sm:text-sm border-r border-slate-300 print:border-slate-800 flex-shrink-0 flex items-center whitespace-nowrap">業主名稱</div>
+                <input type="text" className="px-2 py-2 w-full outline-none focus:bg-blue-50 transition font-bold text-slate-800 text-xs sm:text-sm" value={headerData.ownerName} onChange={(e) => handleHeaderChange('ownerName', e.target.value)} placeholder="請輸入業主名稱" />
               </div>
               <div className="flex border-b sm:border-r border-slate-300 print:border-slate-800">
-                <div className="bg-slate-100 text-slate-700 font-bold w-16 sm:w-20 px-2 py-1.5 text-xs sm:text-sm border-r border-slate-300 print:border-slate-800 flex-shrink-0 flex items-center whitespace-nowrap">公司地址</div>
-                <div className="px-2 py-1.5 w-full text-slate-700 text-xs sm:text-sm flex items-center font-medium whitespace-nowrap">新北市蘆洲區光華路150巷13弄1號1樓</div>
+                <div className="bg-slate-100 text-slate-700 font-bold w-16 sm:w-20 px-2 py-2 text-xs sm:text-sm border-r border-slate-300 print:border-slate-800 flex-shrink-0 flex items-center whitespace-nowrap">公司地址</div>
+                <div className="px-2 py-2 w-full text-slate-700 text-xs sm:text-sm flex items-center font-medium">新北市蘆洲區光華路150巷13弄1號1樓</div>
               </div>
               <div className="flex border-b border-slate-300 print:border-slate-800">
-                <div className="bg-slate-100 text-slate-700 font-bold w-16 sm:w-20 px-2 py-1.5 text-xs sm:text-sm border-r border-slate-300 print:border-slate-800 flex-shrink-0 flex items-center whitespace-nowrap">業主地址</div>
-                <input type="text" className="px-2 py-1.5 w-full outline-none focus:bg-blue-50 transition text-slate-800 text-xs sm:text-sm whitespace-nowrap" value={headerData.ownerAddress} onChange={(e) => handleHeaderChange('ownerAddress', e.target.value)} placeholder="請輸入業主地址" />
+                <div className="bg-slate-100 text-slate-700 font-bold w-16 sm:w-20 px-2 py-2 text-xs sm:text-sm border-r border-slate-300 print:border-slate-800 flex-shrink-0 flex items-center whitespace-nowrap">業主地址</div>
+                <input type="text" className="px-2 py-2 w-full outline-none focus:bg-blue-50 transition text-slate-800 text-xs sm:text-sm" value={headerData.ownerAddress} onChange={(e) => handleHeaderChange('ownerAddress', e.target.value)} placeholder="請輸入業主地址" />
               </div>
               <div className="flex border-b sm:border-b-0 sm:border-r border-slate-300 print:border-slate-800">
-                <div className="bg-slate-100 text-slate-700 font-bold w-16 sm:w-20 px-2 py-1.5 text-xs sm:text-sm border-r border-slate-300 print:border-slate-800 flex-shrink-0 flex items-center whitespace-nowrap">聯絡人</div>
-                <div className="px-2 py-1.5 w-full font-bold text-slate-700 text-xs sm:text-sm flex items-center whitespace-nowrap">廖家緯 (0988676742)</div>
+                <div className="bg-slate-100 text-slate-700 font-bold w-16 sm:w-20 px-2 py-2 text-xs sm:text-sm border-r border-slate-300 print:border-slate-800 flex-shrink-0 flex items-center whitespace-nowrap">聯絡人</div>
+                <div className="px-2 py-2 w-full font-bold text-slate-700 text-xs sm:text-sm flex items-center">廖家緯 (0988676742)</div>
               </div>
               <div className="flex">
-                <div className="bg-slate-100 text-slate-700 font-bold w-16 sm:w-20 px-2 py-1.5 text-xs sm:text-sm border-r border-slate-300 print:border-slate-800 flex-shrink-0 flex items-center whitespace-nowrap">報價日期</div>
-                <div className="px-2 py-1.5 w-full text-slate-700 text-xs sm:text-sm flex items-center font-medium whitespace-nowrap">{formattedDate}</div>
+                <div className="bg-slate-100 text-slate-700 font-bold w-16 sm:w-20 px-2 py-2 text-xs sm:text-sm border-r border-slate-300 print:border-slate-800 flex-shrink-0 flex items-center whitespace-nowrap">報價日期</div>
+                <div className="px-2 py-2 w-full text-slate-700 text-xs sm:text-sm flex items-center font-medium">{formattedDate}</div>
               </div>
             </div>
 
@@ -330,8 +334,8 @@
               </button>
             </div>
 
-            <div className="mt-8 border-2 border-slate-300 rounded-lg p-6 text-sm sm:text-base leading-loose text-slate-700 bg-slate-50 print:border-slate-800 print:bg-transparent">
-              <ul className="list-disc pl-6 space-y-2 font-medium">
+            <div className="mt-8 border-2 border-slate-300 rounded-lg p-4 sm:p-6 text-sm sm:text-base leading-loose text-slate-700 bg-slate-50 print:border-slate-800 print:bg-transparent">
+              <ul className="list-disc pl-5 sm:pl-6 space-y-2 font-medium">
                 <li>付款方式：訂金 <span className="text-blue-700">30%</span>、進度款 <span className="text-blue-700">40%</span>、驗收結案 <span className="text-blue-700">30%</span>。</li>
                 <li>本工程不含水泥修補、油漆及磁磚復原。</li>
                 <li>保固期限：水電管線保固 <span className="text-blue-700">1 年</span> (非人為損壞)。</li>
@@ -340,15 +344,16 @@
             </div>
           </div>
 
-          <div className="fixed bottom-6 right-6 flex flex-col gap-3 print:hidden z-40">
-            <button onClick={addCategory} className="bg-cyan-600 hover:bg-cyan-700 text-white p-3 sm:px-5 sm:py-3 rounded-full shadow-lg flex items-center justify-center transition font-bold" title="新增分類標題">
-              <Plus size={20} className="sm:mr-2" /><span className="hidden sm:inline">新增分類</span>
+          {/* 右下角浮動按鈕優化：手機版改為正圓形且靠右對齊 */}
+          <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 flex flex-col items-end gap-2 sm:gap-3 print:hidden z-40">
+            <button onClick={addCategory} className="bg-cyan-600 hover:bg-cyan-700 text-white w-12 h-12 sm:w-auto sm:h-auto sm:px-5 sm:py-3 rounded-full shadow-lg flex items-center justify-center transition font-bold" title="新增分類標題">
+              <Plus size={24} className="sm:mr-2" /><span className="hidden sm:inline">新增分類</span>
             </button>
-            <button onClick={addItem} className="bg-sky-500 hover:bg-sky-600 text-white p-3 sm:px-5 sm:py-3 rounded-full shadow-lg flex items-center justify-center transition font-bold" title="新增工程項目">
-              <Plus size={20} className="sm:mr-2" /><span className="hidden sm:inline">新增項目</span>
+            <button onClick={addItem} className="bg-sky-500 hover:bg-sky-600 text-white w-12 h-12 sm:w-auto sm:h-auto sm:px-5 sm:py-3 rounded-full shadow-lg flex items-center justify-center transition font-bold" title="新增工程項目">
+              <Plus size={24} className="sm:mr-2" /><span className="hidden sm:inline">新增項目</span>
             </button>
-            <button onClick={handleExportAndEmail} className="bg-blue-700 hover:bg-blue-800 text-white p-4 sm:px-6 sm:py-4 rounded-full shadow-xl flex items-center justify-center transition transform hover:-translate-y-1 mt-2 border-2 border-white">
-              <Mail size={24} className="sm:mr-2" /><span className="hidden sm:inline font-black tracking-wide">輸出 PDF 並發送信件</span>
+            <button onClick={handleExportAndEmail} className="bg-blue-700 hover:bg-blue-800 text-white w-14 h-14 sm:w-auto sm:h-auto sm:px-6 sm:py-4 rounded-full shadow-xl flex items-center justify-center transition transform hover:-translate-y-1 mt-1 border-2 border-white">
+              <Mail size={26} className="sm:mr-2" /><span className="hidden sm:inline font-black tracking-wide">輸出 PDF 並發送信件</span>
             </button>
           </div>
 
