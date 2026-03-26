@@ -10,13 +10,26 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <style>
-    /* 隱藏數字輸入框的上下箭頭 */
+    /* 徹底隱藏數字輸入框的上下箭頭 (支援所有瀏覽器) */
     input[type=number]::-webkit-inner-spin-button, 
-    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-    input[type=number] { -moz-appearance: textfield; }
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none !important; 
+      margin: 0 !important; 
+      display: none !important;
+    }
+    input[type=number] { -moz-appearance: textfield !important; }
     
-    /* 確保下拉選單在手機上排版正確 */
-    select { background-position: right 2px center !important; padding-right: 14px !important; }
+    /* 徹底覆寫 iOS Safari 的巨型下拉選單箭頭，改用極小自訂箭頭節省空間 */
+    select { 
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      appearance: none !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 1px center !important;
+      background-size: 10px !important;
+      padding-right: 12px !important; 
+    }
     input[type=date] { background-color: transparent; }
 
     /* 列印排版最佳化 */
@@ -25,8 +38,8 @@
       body { margin: 0; background-color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       tr, li { page-break-inside: avoid; break-inside: avoid; }
       .print-container { max-width: 100% !important; width: 100% !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; }
-      /* 列印時隱藏下拉選單的箭頭 */
-      select { appearance: none !important; -webkit-appearance: none !important; padding-right: 0 !important; }
+      /* 列印時隱藏下拉選單的自訂箭頭 */
+      select { background-image: none !important; padding-right: 0 !important; }
       input[type=date]::-webkit-calendar-picker-indicator { display: none; }
     }
   </style>
@@ -44,11 +57,11 @@
 
     // --- 圖示元件 ---
     const Download = ({ size=24, className="" }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>;
-    const Plus = ({ size=24, className="" }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
-    const Trash2 = ({ size=24, className="" }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>;
+    const Plus = ({ className="" }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
+    const Trash2 = ({ className="" }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>;
     const X = ({ size=24, className="" }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>;
     const FileText = ({ className="" }) => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>;
-    const RotateCcw = ({ size=24, className="" }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>;
+    const RotateCcw = ({ className="" }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>;
 
     // --- 選單預設資料 ---
     const CATEGORY_OPTIONS = ['燈具及電力工程', '專用迴路及插座', '消防系統', '給排水及衛浴工程', '基礎工程'];
@@ -177,10 +190,10 @@
         });
       };
 
-      // 樣式設定
-      const inputClass = "w-full bg-transparent outline-none p-0.5 sm:p-2 hover:bg-white focus:bg-white focus:ring-1 focus:ring-blue-300 transition-colors text-[11px] sm:text-[15px]";
+      // 樣式設定：手機版字型稍微再縮小一點點以完美塞入 100% 螢幕
+      const inputClass = "w-full bg-transparent outline-none p-0.5 sm:p-2 hover:bg-white focus:bg-white focus:ring-1 focus:ring-blue-300 transition-colors text-[10px] sm:text-[15px]";
       const tdClass = "border border-slate-400 p-0 sm:p-1";
-      const thClass = "border border-slate-400 bg-[#b4c6e7] p-1 sm:p-2 text-center font-bold text-[11px] sm:text-[15px] text-slate-800";
+      const thClass = "border border-slate-400 bg-[#b4c6e7] p-1 sm:p-2 text-center font-bold text-[10px] sm:text-[15px] text-slate-800";
       
       let currentCatIndex = 0;
 
@@ -191,7 +204,7 @@
             <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50 print:hidden backdrop-blur-sm">
               <div className="bg-white p-6 rounded-2xl shadow-2xl max-w-md w-full mx-4 border-t-4 border-blue-600">
                 <h3 className="text-xl font-bold mb-4 flex items-center text-blue-800">
-                  <FileText className="mr-2 text-blue-600" />
+                  <FileText className="mr-2 text-blue-600 w-6 h-6" />
                   儲存 PDF 檔
                 </h3>
                 <p className="text-slate-600 whitespace-pre-line leading-relaxed mb-6">{modal.message}</p>
@@ -208,53 +221,53 @@
 
           <div className="print-container max-w-5xl mx-auto bg-white shadow-xl rounded-sm sm:rounded-lg p-2 sm:p-12">
             
-            <h1 className="text-xl sm:text-3xl font-black text-red-600 text-center mb-3 sm:mb-6 tracking-widest">
-              水電工程維修/翻修報價單
+            {/* 標題 (改成深藍色，稍微縮小手機版字體以防斷行) */}
+            <h1 className="text-lg sm:text-3xl font-black text-blue-900 text-center mb-2 sm:mb-6 tracking-widest">
+              水電工程維修 / 翻修報價單
             </h1>
 
             {/* 表頭資訊 */}
-            <div className="grid grid-cols-2 gap-x-2 gap-y-1 mb-2 sm:mb-4 text-[11px] sm:text-[15px] border border-slate-400 p-1 sm:p-2 bg-slate-50">
+            <div className="grid grid-cols-2 gap-x-1 gap-y-1 mb-2 sm:mb-4 text-[10px] sm:text-[15px] border border-slate-400 p-1 sm:p-2 bg-slate-50">
               <div className="flex items-center">
-                <span className="font-bold whitespace-nowrap mr-1 w-14 sm:w-20">工程名稱：</span>
-                <input type="text" className="w-full bg-transparent outline-none focus:bg-white px-1 font-bold text-blue-900 border-b border-dashed border-slate-300" value={headerData.ownerName} onChange={(e) => handleHeaderChange('ownerName', e.target.value)} placeholder="請輸入業主名稱" />
+                <span className="font-bold whitespace-nowrap mr-1 w-12 sm:w-20">工程名稱：</span>
+                <input type="text" className="w-full bg-transparent outline-none focus:bg-white px-1 font-bold text-blue-900 border-b border-dashed border-slate-300" value={headerData.ownerName} onChange={(e) => handleHeaderChange('ownerName', e.target.value)} placeholder="請輸入名稱" />
               </div>
               <div className="flex items-center">
-                <span className="font-bold whitespace-nowrap mr-1 w-14 sm:w-20">公司名稱：</span>
+                <span className="font-bold whitespace-nowrap mr-1 w-12 sm:w-20">公司名稱：</span>
                 <span className="w-full px-1">岳鼎水電工程</span>
               </div>
               
               <div className="flex items-center">
-                <span className="font-bold whitespace-nowrap mr-1 w-14 sm:w-20">報價日期：</span>
-                {/* 日期選擇器 */}
+                <span className="font-bold whitespace-nowrap mr-1 w-12 sm:w-20">報價日期：</span>
                 <input type="date" className="w-full bg-transparent outline-none focus:bg-white px-1 font-bold text-slate-800 border-b border-dashed border-slate-300 cursor-pointer" value={headerData.date} onChange={(e) => handleHeaderChange('date', e.target.value)} />
               </div>
               <div className="flex items-center">
-                <span className="font-bold whitespace-nowrap mr-1 w-14 sm:w-20">公司地址：</span>
+                <span className="font-bold whitespace-nowrap mr-1 w-12 sm:w-20">公司地址：</span>
                 <span className="w-full px-1 truncate">新北市蘆洲區光華路150巷13弄1號1樓</span>
               </div>
 
               <div className="flex items-center">
-                <span className="font-bold whitespace-nowrap mr-1 w-14 sm:w-20">業主地址：</span>
+                <span className="font-bold whitespace-nowrap mr-1 w-12 sm:w-20">業主地址：</span>
                 <input type="text" className="w-full bg-transparent outline-none focus:bg-white px-1 border-b border-dashed border-slate-300" value={headerData.ownerAddress} onChange={(e) => handleHeaderChange('ownerAddress', e.target.value)} placeholder="請輸入地址" />
               </div>
               <div className="flex items-center">
-                <span className="font-bold whitespace-nowrap mr-1 w-14 sm:w-20">聯絡人：</span>
+                <span className="font-bold whitespace-nowrap mr-1 w-12 sm:w-20">聯絡人：</span>
                 <span className="w-full px-1">廖家緯 (0988676742)</span>
               </div>
             </div>
 
-            {/* 表格區塊 */}
+            {/* 表格區塊：重新調配比例寬度，讓備註跟項目名稱有更多空間 */}
             <div className="w-full border-2 border-slate-400 print:border-slate-800">
               <table className="w-full table-fixed border-collapse">
                 <thead>
                   <tr>
-                    <th className={`${thClass} w-[8%]`}>編號</th>
-                    <th className={`${thClass} w-[30%] text-left`}>項目名稱及規格</th>
-                    <th className={`${thClass} w-[9%]`}>數量</th>
-                    <th className={`${thClass} w-[10%]`}>單位</th>
-                    <th className={`${thClass} w-[14%]`}>單價</th>
-                    <th className={`${thClass} w-[14%]`}>複價</th>
-                    <th className={`${thClass} w-[15%]`}>備註</th>
+                    <th className={`${thClass} w-[6%]`}>編號</th>
+                    <th className={`${thClass} w-[27%] text-left`}>項目名稱及規格</th>
+                    <th className={`${thClass} w-[8%]`}>數量</th>
+                    <th className={`${thClass} w-[9%]`}>單位</th>
+                    <th className={`${thClass} w-[13%]`}>單價</th>
+                    <th className={`${thClass} w-[16%]`}>複價</th>
+                    <th className={`${thClass} w-[21%]`}>備註</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -266,15 +279,15 @@
                         <tr key={item.id} className="border-b border-slate-400 bg-slate-100 group">
                           <td colSpan="7" className="p-0 border border-slate-400 relative">
                             <div className="flex items-center px-1">
-                              <span className="font-bold text-slate-800 text-[11px] sm:text-[15px] whitespace-nowrap shrink-0">{prefixText}</span>
+                              <span className="font-bold text-slate-800 text-[10px] sm:text-[15px] whitespace-nowrap shrink-0">{prefixText}</span>
                               {item.isCustomCol1 ? (
                                 <div className="flex items-center w-full">
                                   <input type="text" className={`${inputClass} font-bold text-slate-800 ml-1`} value={item.col1} onChange={(e) => handleItemChange(item.id, 'col1', e.target.value)} placeholder="自訂名稱..." autoFocus />
-                                  <button onClick={() => handleItemChange(item.id, 'isCustomCol1', false)} className="p-1 text-slate-400 print:hidden shrink-0"><RotateCcw size={12} /></button>
+                                  <button onClick={() => handleItemChange(item.id, 'isCustomCol1', false)} className="p-1 text-slate-400 print:hidden shrink-0"><RotateCcw className="w-3 h-3 sm:w-4 sm:h-4" /></button>
                                 </div>
                               ) : (
                                 <div className="flex items-center w-full">
-                                  <select className="w-full p-0.5 sm:p-2 bg-transparent outline-none font-bold text-slate-800 text-[11px] sm:text-[15px] cursor-pointer hover:bg-slate-200 transition" value={item.col1} onChange={(e) => { if (e.target.value === 'CUSTOM') { setItems(prev => prev.map(i => i.id === item.id ? { ...i, isCustomCol1: true, col1: '' } : i)); } else { handleItemChange(item.id, 'col1', e.target.value); } }}>
+                                  <select className="w-full p-0.5 sm:p-2 bg-transparent outline-none font-bold text-slate-800 text-[10px] sm:text-[15px] cursor-pointer hover:bg-slate-200 transition" value={item.col1} onChange={(e) => { if (e.target.value === 'CUSTOM') { setItems(prev => prev.map(i => i.id === item.id ? { ...i, isCustomCol1: true, col1: '' } : i)); } else { handleItemChange(item.id, 'col1', e.target.value); } }}>
                                     <option value="" disabled>請選擇分類...</option>
                                     {CATEGORY_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                                     <option value="CUSTOM" className="text-blue-600">✎ 自訂輸入...</option>
@@ -282,7 +295,7 @@
                                 </div>
                               )}
                             </div>
-                            <button onClick={() => deleteItem(item.id)} className="absolute right-1 top-1/2 -translate-y-1/2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition print:hidden bg-white rounded shadow-sm"><Trash2 size={12} /></button>
+                            <button onClick={() => deleteItem(item.id)} className="absolute right-1 top-1/2 -translate-y-1/2 text-red-400 hover:text-red-600 p-1 opacity-0 group-hover:opacity-100 transition print:hidden bg-white rounded shadow-sm"><Trash2 className="w-3 h-3 sm:w-4 sm:h-4" /></button>
                           </td>
                         </tr>
                       );
@@ -302,10 +315,10 @@
                           {item.isCustomCol2 ? (
                             <div className="flex items-center w-full overflow-hidden">
                               <input type="text" className={`${inputClass} truncate`} value={item.col2} onChange={(e) => handleItemChange(item.id, 'col2', e.target.value)} placeholder="自訂項目..." autoFocus />
-                              <button onClick={() => handleItemChange(item.id, 'isCustomCol2', false)} className="p-0.5 text-slate-400 print:hidden shrink-0"><RotateCcw size={12} /></button>
+                              <button onClick={() => handleItemChange(item.id, 'isCustomCol2', false)} className="p-0.5 text-slate-400 print:hidden shrink-0"><RotateCcw className="w-3 h-3 sm:w-4 sm:h-4" /></button>
                             </div>
                           ) : (
-                            <select className="w-full p-0.5 sm:p-2 bg-transparent outline-none cursor-pointer hover:bg-white truncate text-[11px] sm:text-[15px]" value={item.col2} onChange={(e) => { if (e.target.value === 'CUSTOM') { setItems(prev => prev.map(i => i.id === item.id ? { ...i, isCustomCol2: true, col2: '' } : i)); } else { handleItemChange(item.id, 'col2', e.target.value); } }}>
+                            <select className="w-full p-0.5 sm:p-2 bg-transparent outline-none cursor-pointer hover:bg-white truncate text-[10px] sm:text-[15px]" value={item.col2} onChange={(e) => { if (e.target.value === 'CUSTOM') { setItems(prev => prev.map(i => i.id === item.id ? { ...i, isCustomCol2: true, col2: '' } : i)); } else { handleItemChange(item.id, 'col2', e.target.value); } }}>
                               <option value="" disabled>請選擇...</option>
                               {ITEM_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                               <option value="CUSTOM" className="text-blue-600">✎ 自訂輸入...</option>
@@ -315,15 +328,14 @@
                         <td className={tdClass}>
                           <input type="number" className={`${inputClass} text-center`} value={item.qty} onChange={(e) => handleItemChange(item.id, 'qty', e.target.value)} min="0" />
                         </td>
-                        {/* 單位下拉選單 */}
                         <td className={tdClass}>
                           {item.isCustomUnit ? (
                             <div className="flex items-center w-full overflow-hidden">
                               <input type="text" className={`${inputClass} truncate text-center`} value={item.unit} onChange={(e) => handleItemChange(item.id, 'unit', e.target.value)} placeholder="自訂" autoFocus />
-                              <button onClick={() => handleItemChange(item.id, 'isCustomUnit', false)} className="p-0.5 text-slate-400 print:hidden shrink-0"><RotateCcw size={12} /></button>
+                              <button onClick={() => handleItemChange(item.id, 'isCustomUnit', false)} className="p-0.5 text-slate-400 print:hidden shrink-0"><RotateCcw className="w-3 h-3 sm:w-4 sm:h-4" /></button>
                             </div>
                           ) : (
-                            <select className="w-full p-0.5 sm:p-2 bg-transparent outline-none cursor-pointer hover:bg-white text-center text-[11px] sm:text-[15px]" value={item.unit} onChange={(e) => { if (e.target.value === 'CUSTOM') { setItems(prev => prev.map(i => i.id === item.id ? { ...i, isCustomUnit: true, unit: '' } : i)); } else { handleItemChange(item.id, 'unit', e.target.value); } }}>
+                            <select className="w-full p-0.5 sm:p-2 bg-transparent outline-none cursor-pointer hover:bg-white text-center text-[10px] sm:text-[15px]" value={item.unit} onChange={(e) => { if (e.target.value === 'CUSTOM') { setItems(prev => prev.map(i => i.id === item.id ? { ...i, isCustomUnit: true, unit: '' } : i)); } else { handleItemChange(item.id, 'unit', e.target.value); } }}>
                               {UNIT_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                               {!UNIT_OPTIONS.includes(item.unit) && item.unit !== '' && <option value={item.unit}>{item.unit}</option>}
                               <option value="CUSTOM" className="text-blue-600">✎ 自訂</option>
@@ -334,16 +346,16 @@
                           <input type="number" className={`${inputClass} text-right`} value={item.price} onChange={(e) => handleItemChange(item.id, 'price', e.target.value)} min="0" />
                         </td>
                         <td className={tdClass}>
-                          <div className="w-full text-right p-0.5 sm:p-2 font-medium text-[11px] sm:text-[15px]">{formatNumber(subtotal)}</div>
+                          <div className="w-full text-right p-0.5 sm:p-2 font-medium text-[10px] sm:text-[15px]">{formatNumber(subtotal)}</div>
                         </td>
-                        {/* 備註與操作按鈕區 (避免絕對定位擋住文字) */}
                         <td className={tdClass}>
                           <div className="flex items-center justify-between h-full">
                             <input type="text" className={`${inputClass} text-left text-slate-500 min-w-0 flex-grow`} value={item.remark} onChange={(e) => handleItemChange(item.id, 'remark', e.target.value)} placeholder="備註..." />
                             
-                            <div className="flex items-center shrink-0 print:hidden ml-0.5 space-x-0.5 opacity-60 hover:opacity-100 transition-opacity">
-                               <button onClick={() => insertItemBelow(item.id)} className="text-green-600 hover:bg-green-100 p-0.5 rounded border border-slate-200 bg-slate-50 shadow-sm" title="在下方新增一列"><Plus size={12} /></button>
-                               <button onClick={() => deleteItem(item.id)} className="text-red-500 hover:bg-red-100 p-0.5 rounded border border-slate-200 bg-slate-50 shadow-sm" title="刪除"><Trash2 size={12} /></button>
+                            {/* 將操作按鈕縮小，避免在手機上擋住備註文字 */}
+                            <div className="flex items-center shrink-0 print:hidden space-x-0.5 opacity-70 hover:opacity-100 transition-opacity">
+                               <button onClick={() => insertItemBelow(item.id)} className="text-green-600 hover:bg-green-100 p-0.5 rounded border border-slate-200 bg-slate-50 shadow-sm" title="在下方新增一列"><Plus className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" /></button>
+                               <button onClick={() => deleteItem(item.id)} className="text-red-500 hover:bg-red-100 p-0.5 rounded border border-slate-200 bg-slate-50 shadow-sm" title="刪除"><Trash2 className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" /></button>
                             </div>
                           </div>
                         </td>
@@ -366,8 +378,8 @@
                             {remark.isCustom ? (
                               <div className="flex items-center w-full">
                                 <input className="w-full bg-transparent border-b border-dashed border-slate-300 outline-none focus:bg-white focus:text-blue-700 py-0.5" value={remark.text} onChange={(e) => updateRemark(remark.id, e.target.value)} placeholder="請輸入自訂條款..." autoFocus />
-                                <button onClick={() => toggleCustomRemark(remark.id, false)} className="ml-1 print:hidden text-slate-400 shrink-0"><RotateCcw size={12}/></button>
-                                <button onClick={() => deleteRemark(remark.id)} className="ml-1 print:hidden text-red-400 shrink-0"><Trash2 size={12}/></button>
+                                <button onClick={() => toggleCustomRemark(remark.id, false)} className="ml-1 print:hidden text-slate-400 shrink-0"><RotateCcw className="w-3 h-3" /></button>
+                                <button onClick={() => deleteRemark(remark.id)} className="ml-1 print:hidden text-red-400 shrink-0"><Trash2 className="w-3 h-3" /></button>
                               </div>
                             ) : (
                               <div className="flex items-center w-full">
@@ -377,13 +389,13 @@
                                   {!PRESET_REMARKS.includes(remark.text) && remark.text !== '' && <option value={remark.text}>{remark.text}</option>}
                                   <option value="CUSTOM" className="text-blue-600">✎ 自訂條款...</option>
                                 </select>
-                                <button onClick={() => deleteRemark(remark.id)} className="ml-1 print:hidden text-red-400 shrink-0"><Trash2 size={12}/></button>
+                                <button onClick={() => deleteRemark(remark.id)} className="ml-1 print:hidden text-red-400 shrink-0"><Trash2 className="w-3 h-3" /></button>
                               </div>
                             )}
                           </li>
                         ))}
                       </ul>
-                      <button onClick={addRemark} className="mt-1 flex items-center text-blue-500 hover:bg-blue-50 print:hidden text-xs font-bold px-1 py-1 rounded transition w-max"><Plus size={12} className="mr-1"/>新增合約條款</button>
+                      <button onClick={addRemark} className="mt-1 flex items-center text-blue-500 hover:bg-blue-50 print:hidden text-xs font-bold px-1 py-1 rounded transition w-max"><Plus className="w-3 h-3 mr-1"/>新增合約條款</button>
                     </td>
                     <td className="border border-slate-400 p-1 sm:p-2 text-right font-bold text-slate-800 text-[11px] sm:text-[15px] align-middle">
                       {showTax ? '報價金額：' : '總計金額：'}
@@ -414,7 +426,7 @@
 
             <div className="mt-3 flex justify-start print:hidden">
               <button onClick={() => setShowTax(!showTax)} className={`flex items-center px-3 py-1.5 rounded text-xs sm:text-sm font-bold transition-all border ${showTax ? 'bg-red-50 text-red-600 border-red-200' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'}`}>
-                {showTax ? <X size={14} className="mr-1" /> : <Plus size={14} className="mr-1" />}
+                {showTax ? <X size={14} className="mr-1" /> : <Plus className="w-3.5 h-3.5 mr-1" />}
                 {showTax ? '移除 8% 營業稅' : '新增 8% 營業稅'}
               </button>
             </div>
@@ -423,10 +435,10 @@
           {/* 右下角浮動按鈕 */}
           <div className="fixed bottom-3 right-3 sm:bottom-6 sm:right-6 flex flex-col items-end gap-2 print:hidden z-40">
             <button onClick={addCategory} className="bg-cyan-600 hover:bg-cyan-700 text-white w-10 h-10 sm:w-auto sm:h-auto sm:px-4 sm:py-2.5 rounded-full shadow-lg flex items-center justify-center transition font-bold" title="新增分類">
-              <Plus size={20} className="sm:mr-2" /><span className="hidden sm:inline text-sm">新增分類</span>
+              <Plus className="w-5 h-5 sm:mr-2" /><span className="hidden sm:inline text-sm">新增分類</span>
             </button>
             <button onClick={addItem} className="bg-sky-500 hover:bg-sky-600 text-white w-10 h-10 sm:w-auto sm:h-auto sm:px-4 sm:py-2.5 rounded-full shadow-lg flex items-center justify-center transition font-bold" title="新增列於底部">
-              <Plus size={20} className="sm:mr-2" /><span className="hidden sm:inline text-sm">新增列於底部</span>
+              <Plus className="w-5 h-5 sm:mr-2" /><span className="hidden sm:inline text-sm">新增列於底部</span>
             </button>
             <button onClick={handleExportPDF} className="bg-blue-700 hover:bg-blue-800 text-white w-12 h-12 sm:w-auto sm:h-auto sm:px-5 sm:py-3.5 rounded-full shadow-xl flex items-center justify-center transition transform hover:-translate-y-1 mt-1 border-2 border-white">
               <Download size={22} className="sm:mr-2" /><span className="hidden sm:inline font-black tracking-wide text-sm">儲存 PDF 檔</span>
